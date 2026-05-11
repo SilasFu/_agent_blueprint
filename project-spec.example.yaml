@@ -1,0 +1,69 @@
+project:
+  name: my-new-project
+  type: web_app
+  stage: mvp
+  owner: solo_developer
+
+requirements:
+  summary: >-
+    一个新项目的结构化需求说明文件。Agent 应先读取此文件，再推荐技术栈并完善配置。
+  core_features:
+    - 用户注册与登录
+    - 基础内容管理
+    - 搜索或筛选
+    - 管理后台
+  optional_features:
+    - AI 摘要
+    - AI 标签生成
+    - 文件上传
+    - 数据导出
+
+constraints:
+  priorities:
+    - 简单稳定
+    - 开发效率优先
+    - 成本可控
+    - 便于单人维护
+  deployment:
+    target: vps
+    containerized: true
+  team_size: 1
+
+preferences:
+  backend:
+    preferred: python
+    framework: fastapi
+  frontend:
+    preferred: react
+    bundler: vite
+  database:
+    preferred: postgresql
+  cache:
+    preferred: redis
+  python:
+    version: "3.12.9"
+    package_manager: uv
+  node:
+    version: "lts"
+    package_manager: pnpm
+
+environment:
+  # This is a recommended default, not a mandatory fixed path.
+  # Replace it with your own preferred project root if needed.
+  use_wsl: true
+  use_docker_for_infra: true
+  keep_host_clean: true
+  project_root: "<your-project-root>"
+
+deliverables:
+  should_generate:
+    - README.md
+    - .gitignore
+    - .env.example
+    - compose.yaml
+    - Makefile
+    - scripts/check-env.sh
+    - scripts/bootstrap.sh
+    - scripts/dev.sh
+    - scripts/test.sh
+    - language_specific_project_files
