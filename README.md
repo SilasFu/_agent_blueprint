@@ -27,6 +27,23 @@
 - 配置原则：保留 `.env.example`，不提交真实 `.env`
 - 代码保护：必须纳入 Git，建议尽早推送远程仓库
 
+## 远程仓库
+
+当前项目已配置两个远程仓库，推送到对应平台时需指定远程名：
+
+```bash
+git push origin main   # 推送到 GitHub（SilasFu/_agent_blueprint）
+git push codeup main   # 推送到阿里云 Codeup
+```
+
+查看当前远程配置：
+
+```bash
+git remote -v
+```
+
+> 首次推送前需确保已在对应平台创建好空仓库。认证由 Git Credential Manager (GCM) 自动管理，首次输一次密码/令牌后永久保存。
+
 ## 最快上手
 
 ```bash
