@@ -32,8 +32,8 @@
 当前项目已配置两个远程仓库，推送到对应平台时需指定远程名：
 
 ```bash
-git push origin main   # 推送到 GitHub（SilasFu/_agent_blueprint）
-git push codeup main   # 推送到阿里云 Codeup
+git push origin main   # 推送到 GitHub（SSH）
+git push codeup main   # 推送到阿里云 Codeup（HTTPS）
 ```
 
 查看当前远程配置：
