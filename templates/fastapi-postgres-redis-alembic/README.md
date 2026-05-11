@@ -2,6 +2,14 @@
 
 这是一个比轻量版更贴近真实项目落地的成品模板，适合需要数据库模型、迁移和更清晰后端结构的 Python 项目。
 
+如果你是第一次使用，默认先执行：
+
+```bash
+make bootstrap
+```
+
+它会先检查环境，再初始化项目、启动 PostgreSQL 和 Redis，并自动执行数据库迁移。
+
 ## 技术栈
 
 - Python `3.12.9`
@@ -31,35 +39,87 @@ cd my-api
 cp .env.example .env
 ```
 
-### 2. 检查环境
-
-```bash
-make check
-```
-
-### 3. 初始化项目
+### 2. 推荐直接初始化项目
 
 ```bash
 make bootstrap
 ```
 
-### 4. 启动开发服务
+如果你只想先单独检查环境，再执行：
+
+```bash
+make check
+```
+
+### 3. 启动开发服务
 
 ```bash
 make dev
 ```
 
-### 5. 运行测试
+### 4. 运行测试
 
 ```bash
 make test
 ```
 
-### 6. 手动执行数据库迁移
+### 5. 手动执行数据库迁移
 
 ```bash
 make migrate
 ```
+
+## 典型成功提示
+
+执行 `make bootstrap` 成功后，终端通常会看到类似提示：
+
+```text
+[完成] 已创建 Python 虚拟环境 .venv
+[完成] 已同步 Python 依赖
+[完成] PostgreSQL 和 Redis 已启动
+[迁移] 正在执行 Alembic 数据库迁移...
+[完成] 项目初始化结束。
+[下一步] 你现在可以执行：
+  make dev
+  make test
+  make migrate
+```
+
+这表示模板已经完成环境检查、依赖同步、基础服务启动和初始迁移。
+
+## 运行成功后会看到什么
+
+启动 `make dev` 后，你可以访问：
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/health`
+- `http://127.0.0.1:8000/docs`
+- `http://127.0.0.1:8000/users`
+- `http://127.0.0.1:8000/items`
+
+其中：
+
+- 访问 `/` 时，典型返回结果类似：
+
+```json
+{
+  "message": "FastAPI Alembic template is running",
+  "app": "app",
+  "environment": "dev"
+}
+```
+
+- 访问 `/health` 时，典型返回结果类似：
+
+```json
+{
+  "status": "ok",
+  "app": "app",
+  "environment": "dev"
+}
+```
+
+- `GET /users` 和 `GET /items` 提供了更接近真实项目的列表型接口起点，适合继续扩展模型、迁移和业务逻辑。
 
 ## 默认能力
 
@@ -134,3 +194,9 @@ make migrate
 - 数据库结构变更必须通过 Alembic 迁移管理
 - 中间件统一通过 Docker 管理
 - 尽量保持统一脚本入口，不要让运行方式分散在多个地方
+
+## 这个模板能证明什么
+
+- 仓库不只支持最小后端模板，也支持带迁移能力的增强后端项目
+- 用户可以通过统一脚本完成环境检查、初始化、迁移、启动和测试
+- 适合作为“从 0 到更真实后端结构”的验证样例

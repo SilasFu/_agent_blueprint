@@ -1,46 +1,48 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[bootstrap] starting project bootstrap"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+bash "$SCRIPT_DIR/check-env.sh"
+
+echo "=============================="
+echo "  Vibe Coding 项目初始化"
+echo "=============================="
 
 if [[ -f ".env.example" && ! -f ".env" ]]; then
   cp .env.example .env
-  echo "[bootstrap] created .env from .env.example"
+  echo "[完成] 已根据 .env.example 创建 .env 文件"
 fi
 
 if [[ -f "pyproject.toml" ]]; then
-  if ! command -v uv >/dev/null 2>&1; then
-    echo "[error] pyproject.toml found but uv is missing"
-    exit 1
-  fi
   if [[ ! -d ".venv" ]]; then
     uv venv
-    echo "[bootstrap] created Python virtual environment"
+    echo "[完成] 已创建 Python 虚拟环境 .venv"
   fi
+
   if [[ -f "uv.lock" ]]; then
     uv sync
-    echo "[bootstrap] synced Python dependencies from uv.lock"
+    echo "[完成] 已根据 uv.lock 同步 Python 依赖"
   else
-    echo "[bootstrap] pyproject.toml found; add dependencies and run 'uv sync' if needed"
+    echo "[提示] 检测到 pyproject.toml，但没有 uv.lock。"
+    echo "[提示] 请按需补充依赖后执行：uv sync"
   fi
 fi
 
 if [[ -f "package.json" ]]; then
-  if ! command -v pnpm >/dev/null 2>&1; then
-    echo "[error] package.json found but pnpm is missing"
-    exit 1
-  fi
   pnpm install
-  echo "[bootstrap] installed Node dependencies"
+  echo "[完成] 已安装 Node.js 依赖"
 fi
 
 if [[ -f "compose.yaml" || -f "docker-compose.yml" ]]; then
-  if ! command -v docker >/dev/null 2>&1; then
-    echo "[error] compose file found but docker is missing"
-    exit 1
-  fi
   docker compose up -d
-  echo "[bootstrap] started Docker infrastructure"
+  echo "[完成] 已启动 Docker 基础服务"
 fi
 
-echo "[done] bootstrap completed"
+echo ""
+echo "[完成] 项目初始化结束。"
+echo "[下一步] 你现在可以优先尝试下面命令："
+echo "  make dev"
+echo "  make test"
+echo ""
+echo "[提示] 如果当前项目是模板生成的具体项目，也可以先查看 README.md 获取更详细的启动说明。"

@@ -2,6 +2,10 @@
 
 本文件用于指导 Agent CLI 在当前全栈模板基础上继续扩展，而不是随意改造技术栈或破坏前后端分离结构。
 
+当前模板默认使用 `scripts/bootstrap.sh` 作为新手主入口。
+
+如果用户只想单独检查环境，再使用 `scripts/check-env.sh`。
+
 ## 1. 当前固定技术栈
 
 除非用户明确要求变更，否则默认保持以下技术栈：
@@ -37,6 +41,13 @@
 5. `compose.yaml`
 6. `scripts` 目录
 7. 前后端源码和测试
+
+如果用户准备初始化项目，应优先建议执行：
+
+1. `make bootstrap`
+2. `make dev-backend`
+3. `make dev-frontend`
+4. `make test`
 
 ## 5. 输出要求
 

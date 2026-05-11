@@ -59,7 +59,7 @@
 ## 7. 推荐提示词
 
 ```text
-先阅读 AGENTS.md、project-spec.yaml、doc/任务执行与交付验收准则.md，
+先阅读 AGENTS.md、project-spec.yaml、doc/02-workflow/任务执行与交付验收准则.md，
 再按 doc/task-playbooks/接入第三方API操作手册.md 的顺序完成任务。
 请把第三方调用封装到统一接入层，并补齐 .env.example、错误处理、超时控制和验证说明。
 如果供应商选择、成本、安全或失败降级策略存在关键分歧，请先向我确认。

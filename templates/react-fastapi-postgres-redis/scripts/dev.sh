@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[hint] run backend and frontend in separate terminals"
-echo "[hint] backend: make dev-backend"
-echo "[hint] frontend: make dev-frontend"
+echo "[提示] 前后端建议分别在两个终端中启动。"
+echo "[提示] 后端命令：make dev-backend"
+echo "[提示] 前端命令：make dev-frontend"

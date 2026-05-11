@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[test] running project tests"
+echo "[测试] 正在尝试运行项目测试..."
 
 ran_any=false
 
@@ -18,6 +18,6 @@ if [[ -f "package.json" ]] && command -v pnpm >/dev/null 2>&1; then
 fi
 
 if [[ "$ran_any" == "false" ]]; then
-  echo "[warn] no runnable test command detected"
-  echo "[hint] ask the Agent to add the appropriate test setup for the selected stack"
+  echo "[警告] 当前没有识别到可直接运行的测试命令。"
+  echo "[提示] 可以让 Agent 按所选技术栈补齐最小测试体系。"
 fi

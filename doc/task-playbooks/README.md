@@ -12,10 +12,10 @@
 ## 使用原则
 
 - 先读 `AGENTS.md`
-- 如果任务还没说清楚，先读 `doc/任务输入模板.md`
+- 如果任务还没说清楚，先读 `doc/02-workflow/任务输入模板.md`
 - 再读 `project-spec.yaml`
-- 再读 `doc/任务执行与交付验收准则.md`
-- 任务做完后，再参考 `doc/任务结果输出模板.md`
+- 再读 `doc/02-workflow/任务执行与交付验收准则.md`
+- 任务做完后，再参考 `doc/02-workflow/任务结果输出模板.md`
 - 最后按当前任务类型选择对应手册
 
 ## 当前已提供的手册
@@ -34,7 +34,7 @@
 如果当前任务属于明确类型，可以直接这样要求 Agent：
 
 ```text
-先阅读 AGENTS.md、project-spec.yaml、doc/任务执行与交付验收准则.md，
+先阅读 AGENTS.md、project-spec.yaml、doc/02-workflow/任务执行与交付验收准则.md，
 再阅读 doc/task-playbooks/ 中与当前任务最相关的操作手册。
 按手册规定的顺序完成任务，并说明你做了哪些验证。
 ```

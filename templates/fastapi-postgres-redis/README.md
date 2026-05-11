@@ -2,6 +2,14 @@
 
 这是一个可直接运行的最小成品模板，适合在 `Windows + WSL2 Ubuntu + Docker` 环境下快速启动一个 Python 后端项目。
 
+如果你是第一次使用，默认只需要记住一个入口：
+
+```bash
+make bootstrap
+```
+
+它会先检查环境，再初始化项目；如果缺少工具，会先用中文告诉你缺什么，并在安装前征求确认。
+
 ## 技术栈
 
 - Python `3.12.9`
@@ -61,19 +69,19 @@ cd my-api
 cp .env.example .env
 ```
 
-### 3. 检查环境
-
-```bash
-make check
-```
-
-### 4. 初始化项目
+### 3. 推荐直接初始化项目
 
 ```bash
 make bootstrap
 ```
 
-### 5. 启动开发服务
+如果你只想先单独检查环境，再执行：
+
+```bash
+make check
+```
+
+### 4. 启动开发服务
 
 ```bash
 make dev
@@ -84,10 +92,57 @@ make dev
 - `http://127.0.0.1:8000/health`
 - `http://127.0.0.1:8000/docs`
 
-### 6. 运行测试
+### 5. 运行测试
 
 ```bash
 make test
+```
+
+## 典型成功提示
+
+执行 `make bootstrap` 成功后，终端通常会看到类似提示：
+
+```text
+[完成] 已根据 .env.example 创建 .env 文件
+[完成] 已创建 Python 虚拟环境 .venv
+[完成] 已同步 Python 依赖
+[完成] PostgreSQL 和 Redis 已启动
+[完成] 项目初始化结束。
+[下一步] 你现在可以执行：
+  make dev
+  make test
+```
+
+这表示模板已经完成了最小初始化，你可以继续启动开发服务或直接运行测试。
+
+## 运行成功后会看到什么
+
+启动 `make dev` 后，你可以访问：
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/health`
+- `http://127.0.0.1:8000/docs`
+
+其中：
+
+- 访问 `/` 时，典型返回结果类似：
+
+```json
+{
+  "message": "FastAPI template is running",
+  "app": "app",
+  "environment": "dev"
+}
+```
+
+- 访问 `/health` 时，典型返回结果类似：
+
+```json
+{
+  "status": "ok",
+  "app": "app",
+  "environment": "dev"
+}
 ```
 
 ## 推荐给 Agent 的提示词
@@ -123,3 +178,9 @@ make test
 - 中间件统一通过 Docker 管理
 - 项目尽量保持统一脚本入口
 - 如果后续要加 AI 能力，优先通过环境变量注入 API Key
+
+## 这个模板能证明什么
+
+- 仓库不仅能给出规则，还能落到一个可运行的 FastAPI 后端模板
+- 用户可以通过统一脚本完成环境检查、初始化、启动和测试
+- 适合作为“从 0 到最小后端项目”的验证样例
