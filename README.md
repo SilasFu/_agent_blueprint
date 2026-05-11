@@ -197,18 +197,11 @@ bash scripts/check-env.sh
 - 第一次打开这套体系：看 `doc/01-onboarding/使用总览导航.md`
 - 第一次起新项目：看 `项目初始化操作手册.md`
 - 想调整 Agent 行为：看 `AGENTS.md`
-- 想继续维护和扩展这套文档体系：看 `doc/04-maintenance/文档命名与目录规范.md`
-- 想知道以后维护这套体系时先改什么、别动什么：看 `doc/04-maintenance/最小维护说明.md`
-- 想统一这套体系里的高频术语：看 `doc/04-maintenance/术语使用规范.md`
-- 想看项目的近期迭代计划：看 `doc/04-maintenance/项目P0迭代路线图.md`
-- 想看支持范围和能力边界：看 `doc/01-onboarding/能力边界与支持范围.md`
-- 想看失败场景和处理办法：看 `doc/01-onboarding/常见问题与失败处理.md`
-- 想快速比较三个模板：看 `doc/01-onboarding/模板案例总览.md`
+- 想看支持范围、失败处理和模板选择：看 `doc/01-onboarding/`
+- 想继续维护和扩展这套文档体系：看 `doc/04-maintenance/`
 - 想查看环境、Git、备份、项目模板等长期资料：看 `doc/03-reference/开发环境知识库总目录.md`
-- 想把任务描述清楚：看 `doc/02-workflow/任务输入模板.md`
-- 想规范执行过程：看 `doc/02-workflow/任务执行与交付验收准则.md`
-- 想规范最终汇报：看 `doc/02-workflow/任务结果输出模板.md`
-- 想处理具体任务：看 `doc/task-playbooks/README.md`
+- 想把任务描述清楚、规范执行过程和统一汇报：看 `doc/02-workflow/`
+- 想处理具体高频任务：看 `doc/task-playbooks/README.md`
 
 ## 脚本怎么用
 
@@ -394,11 +387,7 @@ _agent_blueprint
 
 现在 `doc/` 的分层可以这样理解：
 
-- `01-onboarding`：第一次进入仓库时最该先看的导航、边界、FAQ、案例
-- `02-workflow`：任务怎么提、怎么执行、怎么汇报
-- `03-reference`：环境、Git、备份、模板等长期参考资料
-- `04-maintenance`：路线图、命名规范、术语规范、维护说明
-- `task-playbooks`：高频具体任务的操作手册
+想理解 `doc/` 每一层分别干什么，直接看 `doc/README.md`。
 
 ## 可选成品模板
 
