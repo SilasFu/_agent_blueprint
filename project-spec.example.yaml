@@ -53,7 +53,7 @@ environment:
   use_wsl: true
   use_docker_for_infra: true
   keep_host_clean: true
-  project_root: "<your-project-root>"
+  project_root: ""  # 留空表示使用默认路径，或填写如 /home/user/workspace/my-project
 
 deliverables:
   should_generate:

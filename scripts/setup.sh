@@ -1,10 +1,28 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
 echo "=============================="
 echo "  Vibe Coding 环境一键安装"
-echo "  Ubuntu 26.04 LTS"
+echo "  适用于 Ubuntu / WSL2 Ubuntu"
 echo "=============================="
+
+# ── 工具函数 ──
+
+append_line_if_missing() {
+  local file="$1"
+  local line="$2"
+
+  touch "$file"
+  if ! grep -Fqx "$line" "$file"; then
+    printf '%s\n' "$line" >> "$file"
+  fi
+}
+
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+# ── 主流程 ──
 
 # 1. 系统更新 + 基础依赖
 echo "[1/6] 更新系统并安装基础依赖..."
@@ -12,47 +30,55 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y curl wget git build-essential ca-certificates \
     gnupg lsb-release software-properties-common
 
-# 2. Docker（跑数据库、中间件，不污染系统）
+# 2. Docker
 echo "[2/6] 安装 Docker..."
-if ! command -v docker &>/dev/null; then
+if ! command_exists docker; then
     curl -fsSL https://get.docker.com | sudo bash
-    sudo usermod -aG docker $USER
+    sudo usermod -aG docker "$USER"
     echo "   Docker 安装完成（需要重新登录生效）"
 else
     echo "   Docker 已存在"
 fi
 
-# 3. Flatpak（补 Ubuntu 没有的桌面软件）
-echo "[3/6] 安装 Flatpak..."
-sudo apt install -y flatpak
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
-# 4. pyenv（Python 版本管理，别动系统 Python）
-echo "[4/6] 安装 pyenv..."
+# 3. pyenv
+echo "[3/5] 安装 pyenv..."
 if [ ! -d "$HOME/.pyenv" ]; then
     curl -fsSL https://pyenv.run | bash
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-    echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+    append_line_if_missing ~/.bashrc 'export PYENV_ROOT="$HOME/.pyenv"'
+    append_line_if_missing ~/.bashrc 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"'
+    append_line_if_missing ~/.bashrc 'eval "$(pyenv init -)"'
     echo "   pyenv 安装完成"
 else
     echo "   pyenv 已存在"
 fi
 
-# 5. nvm（Node 版本管理）
-echo "[5/6] 安装 nvm..."
+# 4. nvm
+echo "[4/5] 安装 nvm..."
 if [ ! -d "$HOME/.nvm" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.4/install.sh | bash
-    echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.bashrc
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> ~/.bashrc
+    append_line_if_missing ~/.bashrc 'export NVM_DIR="$HOME/.nvm"'
+    append_line_if_missing ~/.bashrc '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
     echo "   nvm 安装完成"
 else
     echo "   nvm 已存在"
 fi
 
-# 6. pnpm（更快的 npm 替代）
-echo "[6/6] 安装 pnpm..."
-npm install -g pnpm 2>/dev/null || sudo npm install -g pnpm
+# 5. pnpm
+echo "[5/5] 安装 pnpm..."
+# 先加载 nvm 以确保 node 可用
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+if command_exists corepack; then
+    corepack enable
+    corepack prepare pnpm@latest --activate
+    echo "   pnpm 通过 corepack 安装完成"
+elif command_exists npm; then
+    npm install -g pnpm 2>/dev/null || sudo npm install -g pnpm
+    echo "   pnpm 通过 npm 安装完成"
+else
+    echo "   [警告] 未找到 node/npm，请重新打开终端后再安装 pnpm"
+fi
 
 echo ""
 echo "=============================="
@@ -61,14 +87,11 @@ echo "=============================="
 echo ""
 echo "👉 重新打开终端，或运行: source ~/.bashrc"
 echo ""
-echo "📦 Docker 命令（跑完脚本后重新登录才能免 sudo）："
-echo "  docker run -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8"
-echo "  docker run -d --name redis -p 6379:6379 redis"
-echo "  docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=root postgres:16"
-echo ""
-echo "📱 缺少桌面软件？Flatpak 搜一下："
-echo "  flatpak search <软件名>"
-echo "  flatpak install flathub <软件名>"
+echo "📦 下一步：创建或进入项目目录"
+echo "  方式一：从模板创建项目"
+echo "    bash scripts/init-project.sh fastapi-postgres-redis ~/workspace/my-api my-api"
+echo "  方式二：基于需求文件生成骨架"
+echo "    bash scripts/scaffold.sh project-spec.yaml ~/workspace/my-project"
 echo ""
 echo "🐍 Python 版本管理："
 echo "  pyenv install 3.12"

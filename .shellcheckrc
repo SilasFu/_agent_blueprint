@@ -1,0 +1,15 @@
+# ShellCheck 配置
+# https://www.shellcheck.net/
+
+# 排除模板目录（模板脚本有自己的上下文）
+source-path=scripts
+
+# 允许 source 相对路径（lib.sh 需要）
+source-path=scripts
+
+# 暂时忽略的规则
+# SC2034: 未使用的变量（lib.sh 中的函数可能在外部使用）
+disable=SC2034
+
+# SC2155: local 和赋值分开（项目风格允许合并）
+disable=SC2155

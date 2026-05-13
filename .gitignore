@@ -1,14 +1,45 @@
+# 环境与密钥
 .env
+.env.*.local
+
+# 需求文件（可能包含项目敏感信息）
+project-spec.yaml
+
+# Python
 .venv/
-node_modules/
-dist/
-build/
 __pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+*.whl
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.pyright/
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+
+# 覆盖率
 coverage/
 htmlcov/
+
+# 日志
 *.log
+
+# IDE
 .idea/
 .vscode/
+*.swp
+*.swo
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker 数据（本地开发时不提交 volume 数据）
+docker-data/

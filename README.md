@@ -7,7 +7,7 @@
 
 这是一个面向 `Agent CLI + 人类协作者` 的项目启动框架。
 
-它的目标不是替你承诺“包办所有开发问题”，而是先帮你把一件事做稳：
+它的目标不是替你承诺"包办所有开发问题"，而是先帮你把一件事做稳：
 
 - 用统一规则、模板和脚本，稳定完成新项目初始化、环境准备和基础协作落地
 
@@ -21,8 +21,43 @@
 
 - 你告诉仓库项目需求和约束
 - Agent 先读规则，不急着乱生成代码
-- `bootstrap.sh` 先检查环境，再按需初始化项目
-- 模板和脚本帮你把新项目从“想法”推进到“可运行起点”
+- `scaffold.sh` 或 `init-project.sh` 帮你从"想法"推进到"可运行起点"
+- 模板和脚本帮你把新项目稳定初始化
+
+## 最快上手
+
+### 方式一：从模板直接创建项目（推荐，最快）
+
+```bash
+bash scripts/init-project.sh fastapi-postgres-redis ~/workspace/my-api my-api
+cd ~/workspace/my-api
+cp .env.example .env
+# 编辑 .env，修改密码和配置
+make bootstrap && make dev
+```
+
+可选模板：
+- `fastapi-postgres-redis` — 最小 FastAPI 后端
+- `fastapi-postgres-redis-alembic` — 带 Alembic 迁移的增强后端
+- `react-fastapi-postgres-redis` — React + FastAPI 全栈
+
+### 方式二：基于 project-spec.yaml 生成项目
+
+```bash
+cp project-spec.example.yaml project-spec.yaml
+# 编辑 project-spec.yaml，填写项目需求
+make validate   # 校验需求文件
+make scaffold   # 生成项目骨架
+```
+
+### 方式三：只检查环境
+
+```bash
+make check      # 检查环境是否具备
+make bootstrap  # 检查环境 + 初始化项目
+```
+
+> **Windows 原生用户注意**：所有脚本基于 Bash，请通过 WSL2 执行。
 
 ## 首屏速览
 
@@ -44,6 +79,7 @@
 ## 快速价值证明
 
 - `1` 个默认主入口：`make bootstrap`
+- `1` 个项目创建入口：`bash scripts/init-project.sh`
 - `3` 个已整理的可运行模板
 - `3` 类支撑文档：路线图、能力边界、常见问题
 - `1` 套统一思路：规则 + 脚本 + 模板 + Agent 协作
@@ -130,12 +166,14 @@ flowchart TD
 
 ## 默认环境约定
 
-- 开发环境：`Windows + WSL2 Ubuntu`
+- 开发环境：`Windows + WSL2 Ubuntu`（脚本在 Windows 原生 PowerShell 下需通过 WSL 执行）
 - Python：`pyenv + uv`
 - Node：`nvm + pnpm`
 - 基础设施：`Docker + PostgreSQL + Redis`
 - 配置原则：保留 `.env.example`，不提交真实 `.env`
 - 代码保护：必须纳入 Git，建议尽早推送远程仓库
+
+> **Windows 原生用户注意**：所有脚本基于 Bash，在 Windows 原生 PowerShell 中无法直接运行。请通过 WSL2 Ubuntu 执行，或使用 `wsl bash scripts/xxx.sh` 调用。
 
 ## 远程仓库
 
@@ -154,43 +192,6 @@ git remote -v
 
 > 首次推送前需确保已在对应平台创建好空仓库。认证由 Git Credential Manager (GCM) 自动管理，首次输一次密码/令牌后永久保存。
 
-## 最快上手
-
-```bash
-cp -r _agent_blueprint my-new-project
-cd my-new-project
-cp project-spec.example.yaml project-spec.yaml
-cp .env.example .env
-```
-
-然后按这个顺序继续：
-
-1. 先看 `doc/01-onboarding/使用总览导航.md`
-2. 填写 `project-spec.yaml`
-3. 让 Agent 先读 `AGENTS.md`
-4. 优先运行 `bash scripts/bootstrap.sh`
-5. 如果你只想单独检查环境，再运行 `bash scripts/check-env.sh`
-
-对技术小白更友好的理解方式：
-
-- `scripts/bootstrap.sh` 是默认主入口，适合大多数第一次使用的人
-- 它会先自动执行环境检查，再继续项目初始化
-- 如果发现机器缺工具，会先用中文说明缺什么
-- 在真正安装前，会先询问你是否同意自动安装
-- 只有你确认后，脚本才会继续安装缺失项
-
-如果你只想先看看电脑缺了什么、不想立刻初始化项目，可以单独执行：
-
-```bash
-bash scripts/check-env.sh
-```
-
-如果你想了解这个项目接下来会优先迭代什么，可以看：
-
-- `doc/04-maintenance/项目P0迭代路线图.md`
-- `doc/01-onboarding/能力边界与支持范围.md`
-- `doc/01-onboarding/常见问题与失败处理.md`
-
 ## 先看什么
 
 - 想先快速理解 `doc/` 目录每一层分别干什么：看 `doc/README.md`
@@ -205,22 +206,33 @@ bash scripts/check-env.sh
 
 ## 脚本怎么用
 
+- `scripts/init-project.sh`
+  - 从模板创建新项目的一键脚本
+  - 自动复制模板、替换项目名/容器名/数据库名、初始化 Git
+  - 用法：`bash scripts/init-project.sh <模板名> <目标目录> [项目名]`
 - `scripts/bootstrap.sh`
   - 推荐新手优先使用的主入口
-  - 会先检查环境，再按项目实际情况执行初始化
+  - 会先检查环境（包括 Docker daemon 状态和端口冲突），再按项目实际情况执行初始化
 - `scripts/check-env.sh`
   - 适合你只想先体检环境时使用
   - 会用中文列出已安装、缺失和推荐安装的工具
+  - 会检测 Docker daemon 是否运行
   - 如果发现缺失，会先问你要不要自动安装
 - `scripts/dev.sh`
   - 用来识别或提示当前项目的开发启动方式
+  - 在蓝图根目录下会引导你先创建项目
 - `scripts/test.sh`
   - 用来尝试运行项目测试
+  - 在蓝图根目录下会引导你先创建项目
+- `scripts/setup.sh`
+  - Ubuntu/WSL2 一键安装开发环境（Docker/pyenv/nvm/pnpm）
+  - 适合全新机器首次配置
 
 ## 当前能力边界
 
 - 推荐环境：`Windows + WSL2 Ubuntu` 或原生 `Ubuntu`
-- 当前已支持：环境检查、缺失依赖确认后安装、项目初始化、开发入口、测试入口、Docker 基础服务启动
+- Windows 原生 PowerShell 下脚本无法直接运行，需通过 WSL 执行
+- 当前已支持：环境检查、Docker daemon 检测、端口冲突预警、缺失依赖确认后安装、项目初始化、模板→项目一键转换、开发入口、测试入口、Docker 基础服务启动
 - 当前重点覆盖：Python 后端项目、FastAPI 项目、React + FastAPI 全栈项目
 - 当前不保证：Windows 原生命令环境自动安装、macOS 全流程验证、CI/CD、自动部署
 
@@ -230,12 +242,15 @@ bash scripts/check-env.sh
 
 | 能力项 | 当前状态 | 说明 |
 | --- | --- | --- |
-| 环境检查 | 已支持 | `check-env.sh` 支持中文提示和缺失检测 |
+| 环境检查 | 已支持 | `check-env.sh` 支持中文提示、缺失检测和 Docker daemon 检测 |
 | 缺失依赖安装 | 部分支持 | 主要面向 `apt` 可用的 Ubuntu / WSL Ubuntu |
+| Docker daemon 检测 | 已支持 | 检查 Docker 是否安装且 daemon 是否运行 |
+| 端口冲突预警 | 已支持 | 启动 Docker 服务前检测端口占用并提示 |
 | 项目初始化 | 已支持 | `bootstrap.sh` 作为默认主入口 |
-| Docker 基础服务 | 已支持 | 可按项目文件启动 PostgreSQL / Redis 等 |
-| 开发入口 | 已支持 | `dev.sh` 或模板专用开发脚本 |
-| 测试入口 | 已支持 | `test.sh` 或模板专用测试脚本 |
+| 模板→项目转换 | 已支持 | `init-project.sh` 一键从模板创建项目并参数化替换 |
+| Docker 基础服务 | 已支持 | 可按项目文件启动 PostgreSQL / Redis 等，配置引用环境变量 |
+| 开发入口 | 已支持 | `dev.sh` 或模板专用开发脚本，蓝图根目录下给出引导 |
+| 测试入口 | 已支持 | `test.sh` 或模板专用测试脚本，蓝图根目录下给出引导 |
 | 模板样例 | 已支持 | 当前重点覆盖 FastAPI 和 React + FastAPI |
 | 数据库迁移 | 部分支持 | Alembic 模板已支持，其他栈待扩展 |
 | CI/CD | 暂不保证 | 不属于当前 P0 范围 |
@@ -247,7 +262,7 @@ bash scripts/check-env.sh
 - 1 到 5 人的小团队
 - 想把 Agent 协作方式固化到项目里的用户
 - 想快速起一个 Python 后端或 React + FastAPI 项目的用户
-- 想减少“脚本、文档、规则、模板各说各话”的用户
+- 想减少"脚本、文档、规则、模板各说各话"的用户
 
 ## 暂时不太适合谁
 
@@ -379,9 +394,11 @@ _agent_blueprint
 ├─ compose.yaml
 ├─ project-spec.example.yaml
 └─ scripts
+   ├─ init-project.sh
    ├─ bootstrap.sh
    ├─ check-env.sh
    ├─ dev.sh
+   ├─ setup.sh
    └─ test.sh
 ```
 
@@ -391,7 +408,7 @@ _agent_blueprint
 
 ## 可选成品模板
 
-- 这些模板默认属于“可选样例”，不是当前项目的必选上下文
+- 这些模板默认属于"可选样例"，不是当前项目的必选上下文
 - 只有在你明确决定从某个模板起步时，才让 Agent 深入读取对应目录
 - 如果当前任务是建立规则、澄清约束、完善流程，优先使用根目录文档，不要让 Agent 被模板实现细节带偏
 - `templates/fastapi-postgres-redis`
